@@ -4,23 +4,25 @@ import { useRef, useState } from 'react';
 
 const Manager = () => {
     const ref = useRef()
+    const passwordRef = useRef()
     const [form, setform] = useState({ site: "", username: "", password: "" })
     const [passwordArry, setpasswordArry] = useState([])
 
     useEffect(() => {
         let passwords = localStorage.getItem("passwords")
-        let passwordArry;
         if (passwords) {
             setpasswordArry(Json.parse(password))
         }
     }, [])
     const showPassword = () => {
-        alert("show the password");
-        if (ref.current.src.includes = ("icons\hidden.png")) {
-            ref.current.src = "icons\eye.png"
+        passwordRef.current.type = "text" 
+        if (ref.current.src.includes = ("icons/cross.png")) {
+            ref.current.src = "icons/cross.png"
+            passwordRef.current.type = "text" 
         }
         else {
-            ref.current.src = "icons\hidden.png"
+            ref.current.src = "icons/cross.png"
+             passwordRef.current.type = "password" 
         }
     }
 
@@ -56,7 +58,7 @@ const Manager = () => {
 
                         <div className="ralative">
 
-                            <input value={form.password} onChange={handleChange} placeholder='Enter Password' className=' rounded-full border border-green-700  w-full p-4 py-1 ' type='text' name='password' id='' />
+                            <input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className=' rounded-full border border-green-700  w-full p-4 py-1 ' type='password' name='password' id='' />
                             <span className='absolute right-45 top-69 cursor-pointer' onClick={showPassword}>
                                 <img ref={ref} className=' p-1' width={26} src="icons\eye.png " alt='eye' />
                             </span>
@@ -83,7 +85,7 @@ const Manager = () => {
                             {passwordArry.map((item,index)=>{
                             
                                 return <tr key={index}>
-                                <td className='py-2 border-white   text-center w-32'> <a href={item.site} target='blank'/>{item.site}</td>
+                                <td className='py-2 border-white   text-center w-32'> <a href={item.site} target='_blank'> {item.site}</a></td>
                                 <td className='py-2 border-white   text-center w-32'>{item.username}</td>
                                 <td className='py-2 border-white   text-center w-32'>{item.password}</td>
                             </tr>
