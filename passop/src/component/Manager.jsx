@@ -9,20 +9,28 @@ const Manager = () => {
     const [passwordArry, setpasswordArry] = useState([])
 
     useEffect(() => {
-        let passwords = localStorage.getItem("passwords")
+        let passwords = localStorage.getItem("passwords");
         if (passwords) {
             setpasswordArry(Json.parse(password))
         }
     }, [])
+
+     const copyText = (text)=>{
+        navigator.clipboard.writeText(text)
+     }
+
+
+
     const showPassword = () => {
-        passwordRef.current.type = "text" 
-        if (ref.current.src.includes = ("icons/cross.png")) {
-            ref.current.src = "icons/cross.png"
-            passwordRef.current.type = "text" 
+        passwordRef.current.type = "text"
+        console.log(ref.current.src)
+        if (ref.current.src.includes("/icons/hide.png")) {
+            ref.current.src = "/icons/eye.png"
+            passwordRef.current.type = "password"
         }
         else {
-            ref.current.src = "icons/cross.png"
-             passwordRef.current.type = "password" 
+            passwordRef.current.type = "text"
+            ref.current.src = "/icons/hide.png"
         }
     }
 
@@ -82,13 +90,38 @@ const Manager = () => {
                             </tr>
                         </thead>
                         <tbody className='bg-green-100'>
-                            {passwordArry.map((item,index)=>{
-                            
+                            {passwordArry.map((item, index) => {
+
                                 return <tr key={index}>
-                                <td className='py-2 border-white   text-center w-32'> <a href={item.site} target='_blank'> {item.site}</a></td>
-                                <td className='py-2 border-white   text-center w-32'>{item.username}</td>
-                                <td className='py-2 border-white   text-center w-32'>{item.password}</td>
-                            </tr>
+                                    <td className='  justify-center py-2 border-white   text-center '>
+                                        <div className='flex items-center justify-center'>
+
+                                            <a href={item.site} target='_blank'> {item.site}</a>
+
+                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={()=>{copyText(item.site)}}>
+                                                <img src='/icons/copy.png' />
+                                            </div>
+                                        </div>
+
+                                    </td>
+
+                                    <td className=' justify-center py-2 border-white   text-center '>
+                                        <div className='flex items-center justify-center'>
+                                            <span>{item.username}</span>
+                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={()=>{copyText(item.username)}}>
+                                                <img src='/icons/copy.png' />
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td className=' justify-center py-2 border-white   text-center '>
+                                        <div className='flex items-center justify-center'>
+                                            <span>{item.password}</span>
+                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2'  onClick={()=>{copyText(item.password)}}>
+                                                <img src='/icons/copy.png' />
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
                             })}
                         </tbody>
                     </table>}
