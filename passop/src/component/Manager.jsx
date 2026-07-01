@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react'
 import addIcon from "../assets/apps-add.svg";
 import { useRef, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { v4 as uuidv4 } from 'uuid';
 
 const Manager = () => {
     const ref = useRef()
@@ -15,9 +17,19 @@ const Manager = () => {
         }
     }, [])
 
-     const copyText = (text)=>{
+    const copyText = (text) => {
+        toast.success('Copied to clipboard!', {
+            position: "top-right",
+            autoClose: 1000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
         navigator.clipboard.writeText(text)
-     }
+    }
 
 
 
@@ -35,10 +47,28 @@ const Manager = () => {
     }
 
     const savePassword = () => {
-        setpasswordArry([...passwordArry, form])
-        localStorage.setItem("password", JSON.stringify([...passwordArry, form]))
+        setpasswordArry([...passwordArry, {...form,id: uuidv4()}])
+        localStorage.setItem("password", JSON.stringify([...passwordArry, {...form,id: uuidv4()}]))
         console.log([...passwordArry, form])
+        setform({ site: "", username: "", password: "" })
     }
+
+    const deletePassword = (id) => {
+        console.log("deleting password with id ",id)
+        let c = confirm("Do you really want to delete this password?")
+        if(c){
+     setpasswordArry(passwordArry.filter(item=>item.id!==id))
+      localStorage.setItem("password", JSON.stringify(passwordArry.filter(item=>item.id!==id)))
+    }
+}
+
+    const editPassword = (id) => {
+        console.log("editing password with id ",id)
+        setform(passwordArry.filter(item=>item.id===id)[0])
+        setpasswordArry(passwordArry.filter(item=>item.id!==id))
+    }
+
+
     const handleChange = (e) => {
         setform({ ...form, [e.target.name]: e.target.value })
     }
@@ -46,6 +76,19 @@ const Manager = () => {
 
     return (
         <>
+            <ToastContainer
+                position="top-right"
+                autoClose={5000}
+                hideProgressBar={false}
+                newestOnTop={false}
+                closeOnClick={false}
+                rtl={false}
+                pauseOnFocusLoss
+                draggable
+                pauseOnHover
+                theme="dark"
+                transition="Bounce"
+            />
             <div className="absolute inset-0 -z-10 h-full w-full bg-green-50 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-green-400 opacity-20 blur-[100px]"></div></div>
 
             <div className="   mx-auto px-40 py-16  mycontainer">
@@ -75,7 +118,7 @@ const Manager = () => {
 
                     <button onClick={savePassword} className='flex justify-center gap-2 items-center bg-green-500 hover:bg-green-600  cursor-pointer rounded-full px-4 py-2 w-fit  border-1 border-black'>
                         <img src={addIcon} alt="add" className="w-5 h-5 " />
-                        Add Passward</button>
+                        Save </button>
                 </div>
 
                 <div className="passwords">
@@ -87,6 +130,8 @@ const Manager = () => {
                                 <th className=' py-2  '>Site </th>
                                 <th className=' py-2  '>Username</th>
                                 <th className=' py-2  '>Password</th>
+                                <th className=' py-2  '>Action</th>
+
                             </tr>
                         </thead>
                         <tbody className='bg-green-100'>
@@ -98,7 +143,7 @@ const Manager = () => {
 
                                             <a href={item.site} target='_blank'> {item.site}</a>
 
-                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={()=>{copyText(item.site)}}>
+                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={() => { copyText(item.site) }}>
                                                 <img src='/icons/copy.png' />
                                             </div>
                                         </div>
@@ -108,7 +153,7 @@ const Manager = () => {
                                     <td className=' justify-center py-2 border-white   text-center '>
                                         <div className='flex items-center justify-center'>
                                             <span>{item.username}</span>
-                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={()=>{copyText(item.username)}}>
+                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={() => { copyText(item.username) }}>
                                                 <img src='/icons/copy.png' />
                                             </div>
                                         </div>
@@ -116,10 +161,18 @@ const Manager = () => {
                                     <td className=' justify-center py-2 border-white   text-center '>
                                         <div className='flex items-center justify-center'>
                                             <span>{item.password}</span>
-                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2'  onClick={()=>{copyText(item.password)}}>
+                                            <div className=' iconcopy cursor-pointer w-3 h-3 mx-2' onClick={() => { copyText(item.password) }}>
                                                 <img src='/icons/copy.png' />
                                             </div>
                                         </div>
+                                    </td>
+                                    <td className=' justify-center py-2 border-white text-center flex '>
+                                        <span className=' cursor-pointer  '  onClick={()=>{editPassword(item.id)}}>
+                                        <img className='w-5 h-5' src='icons/edit-text.png'/>
+                                         </span>
+                                      <span className='cursor-pointer mx-5' onClick={()=>{deletePassword(item.id)}}>
+                                         <img className='w-4 h-4' src='icons/Delete.png'/>
+                                      </span>
                                     </td>
                                 </tr>
                             })}
